@@ -1,40 +1,29 @@
 #include "LampManager.h"
 
 CRGB LampManager::leds[NUM_LEDS];
-CRGB LampManager::currentLampColor;
 
 void LampManager::SetColor(CRGB color) {
-    currentLampColor = color;
-}
-
-void LampManager::ApplyColor() {
     for (uint8_t i = 0; i < NUM_LEDS; i++) {
-        leds[i] = currentLampColor;
+        leds[i] = color;
     }
     FastLED.show();
 }
 
-bool LampManager::IsLampActive() {
-    return isLampActive;
-}
-
 void LampManager::Setup() {
-    currentLampColor = CRGB::Red;
-
     pinMode(LED_STRIP_PIN, OUTPUT);
     pinMode(RESET_BUTTON_PIN, INPUT);
 
     FastLED.addLeds<NEOPIXEL, LED_STRIP_PIN>(leds, NUM_LEDS);
-    FastLED.setBrightness(255);
+    SetColor(CRGB::Magenta);
     TurnOn();
 }
 
 void LampManager::TurnOff() {
-    SetColor(CRGB::Black);
-    ApplyColor();
+    FastLED.setBrightness(0);
+    FastLED.show();
 }
 
 void LampManager::TurnOn() {
-    SetColor(CRGB::Magenta);
-    ApplyColor();
+    FastLED.setBrightness(255);
+    FastLED.show();
 }

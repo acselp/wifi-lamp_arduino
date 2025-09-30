@@ -13,16 +13,10 @@ public:
     static void TurnOn();
     static void TurnOff();
     static void SetColor(CRGB color);
-    static void ApplyColor();
-
-    static bool IsLampActive();
     static void Setup();
 
 private:
     static CRGB leds[NUM_LEDS];
-
-    static bool isLampActive;
-    static CRGB currentLampColor;
 };
 
 
