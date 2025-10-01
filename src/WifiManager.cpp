@@ -9,11 +9,10 @@ WifiMode WifiManager::currentMode;
 bool WifiManager::isConnected;
 
 void WifiManager::Setup() {
-    EEPROM.begin(1);
+    EEPROM.begin(21);
     SetMode(Hotspot);
     ListenToWifiEvents();
-    WiFi.mode(WIFI_AP_STA);
-    currentMode = GetModeFromMemory();
+    GetModeFromMemory();
     ApplyMode();
 }
 
@@ -34,28 +33,29 @@ bool WifiManager::IsConnected()
     return isConnected;
 }
 
-WifiMode WifiManager::GetModeFromMemory()
+void WifiManager::GetModeFromMemory()
 {
-    WifiMode mode;
-    EEPROM.get(EEPROM_WIFI_MODE_ADDRESS, mode);
-
-    return mode;
+    EEPROM.get(EEPROM_WIFI_MODE_ADDRESS, currentMode);
+    EEPROM.get(EEPROM_PASSWORD_ADDRESS, credentials.Password);
+    EEPROM.get(EEPROM_SSID_ADDRESS, credentials.SSID);
 }
 
 void WifiManager::SaveModeInMemory()
 {
     EEPROM.put(EEPROM_WIFI_MODE_ADDRESS, currentMode);
+    EEPROM.put(EEPROM_PASSWORD_ADDRESS, credentials.Password);
+    EEPROM.put(EEPROM_SSID_ADDRESS, credentials.SSID);
     EEPROM.commit();
 }
 
 void WifiManager::ApplyMode()
 {
-    if (currentMode == Client) {
+    // if (currentMode == Client) {
         ConnectAsClient();
-    }
-    else if (currentMode == Hotspot) {
-        StartHotstop();
-    }
+    // }
+    // else if (currentMode == Hotspot) {
+    //     StartHotstop();
+    // }
 }
 
 void WifiManager::StartHotstop()
@@ -66,16 +66,15 @@ void WifiManager::StartHotstop()
 
 void WifiManager::ConnectAsClient()
 {
-    WiFi.begin(credentials.SSID, credentials.Password);
+    WiFi.config(local_IP, gateway, subnet);
+    WiFi.begin("Redmi 4x", "11223344");
 }
 
 void WifiManager::ListenToWifiEvents()
 {
-    // WiFi.onStationModeGotIP([](const WiFiEventStationModeGotIP& event) {
-    //     isConnected = true;
-    // });
-
-    // WiFi.onStationModeDisconnected([](const WiFiEventStationModeDisconnected& event) {
-    //     isConnected = false;
-    // });
+    while (!WiFi.isConnected()) {
+        delay(100);
+    }
+    
+    isConnected = true;
 }

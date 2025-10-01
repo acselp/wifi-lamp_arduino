@@ -51,13 +51,19 @@ void ApiManager::MapEndpoints() {
         }
 
         WifiMode mode;
-        sscanf(server.arg(0).c_str(), "%d", &mode);
+        WifiCreadentials cred;
 
+        sscanf(server.arg(0).c_str(), "%d", &mode);
+        sscanf(server.arg(1).c_str(), "%s", cred.SSID);
+        sscanf(server.arg(2).c_str(), "%s", cred.Password);
+
+        
+        WifiManager::SetCredentials(cred);
         WifiManager::SetMode(mode);
 
-        if (mode == Client) {
+        // if (mode == Client) {
             LampManager::Blink([] { return WifiManager::IsConnected(); });
-        }
+        // }
     });
 }
 

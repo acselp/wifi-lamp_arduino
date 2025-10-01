@@ -4,6 +4,8 @@
 #define WIFI_SSID "WIFI-LAMP"
 #define WIFI_PASSWORD "11223344"
 #define EEPROM_WIFI_MODE_ADDRESS 0
+#define EEPROM_PASSWORD_ADDRESS 1
+#define EEPROM_SSID_ADDRESS 11
 #define DEFAULT_IP 192,168,4,1
 #define DEFAULT_GATEWAY 192,168,4,1
 #define DEFAULT_MASK 255,255,255,0
@@ -32,8 +34,10 @@ public:
     static WifiMode currentMode;
     static bool isConnected;
     static WifiCreadentials credentials;
-    static WifiMode GetModeFromMemory();
-    static void SaveModeInMemory();
+
+    static void GetModeFromMemory();
+    static void SaveModeInMemory();  
+
     static void ApplyMode();
     static void StartHotstop();
     static void ConnectAsClient();
