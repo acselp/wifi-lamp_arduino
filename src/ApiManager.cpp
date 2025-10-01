@@ -1,5 +1,6 @@
-#include "./ApiManager.h"
-#include "./LampManager.h"
+#include "ApiManager.h"
+#include "LampManager.h"
+#include "WifiManager.h"
 
 ESP8266WebServer ApiManager::server(SERVER_PORT);
 
@@ -14,7 +15,7 @@ void ApiManager::HandleClient() {
 
 void ApiManager::MapEndpoints() {
     On((char*)"/setColor", []() {
-        if (server.args() == 0) {
+        if (!server.hasArg("color")) {
             server.send(400, "text/plain", "Missing color argument");
             return;
         }
@@ -41,6 +42,22 @@ void ApiManager::MapEndpoints() {
     On((char*)"/turnOff", [] {
         LampManager::TurnOff();
         server.send(200, "*/*", "");
+    });
+
+    On((char*)"/switchWifiMode", [] {
+        if (!server.hasArg("wifiMode")) {
+            server.send(400, "text/plain", "Missing wifiMode param");
+            return;
+        }
+
+        WifiMode mode;
+        sscanf(server.arg(0).c_str(), "%d", &mode);
+
+        WifiManager::SetMode(mode);
+
+        if (mode == Client) {
+            LampManager::Blink([] { return WifiManager::IsConnected(); });
+        }
     });
 }
 

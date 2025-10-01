@@ -18,6 +18,19 @@ void LampManager::Setup() {
     TurnOn();
 }
 
+void LampManager::Blink(const fl::function<bool()>& predicate)
+{
+    CRGB previousColor = leds[0];
+    SetColor(CRGB::BlueViolet);
+    while (!predicate()) {
+        TurnOn();
+        delay(500);
+        TurnOff();
+        delay(500);
+    }
+    SetColor(previousColor);
+}
+
 void LampManager::TurnOff() {
     FastLED.setBrightness(0);
     FastLED.show();

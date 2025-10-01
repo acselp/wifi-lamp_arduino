@@ -14,6 +14,7 @@ public:
     static void TurnOff();
     static void SetColor(CRGB color);
     static void Setup();
+    static void Blink(const fl::function<bool()>& predicate);
 
 private:
     static CRGB leds[NUM_LEDS];
